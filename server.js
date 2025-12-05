@@ -3,12 +3,12 @@ import express from "express";
 const app = express();
 app.use(express.json());
 
-// Simple health check – for GET /
+// Health check: GET /
 app.get("/", (req, res) => {
   res.json({ status: "ok", message: "API server is running" });
 });
 
-// Main endpoint your GPT will call
+// Main endpoint your GPT will call: POST /render/capcut
 app.post("/render/capcut", async (req, res) => {
   const { template_id, script, scenes, captions, aspect_ratio } = req.body;
 
@@ -20,7 +20,7 @@ app.post("/render/capcut", async (req, res) => {
     aspect_ratio
   });
 
-  // For now, just return fake URLs so everything works end-to-end
+  // For now, just return fake URLs so the pipeline works end-to-end
   const fakeId = Date.now();
 
   res.json({
@@ -29,5 +29,6 @@ app.post("/render/capcut", async (req, res) => {
   });
 });
 
+// IMPORTANT: use Render's PORT env variable
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API server running on port ${PORT}`));
