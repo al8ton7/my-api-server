@@ -1,39 +1,33 @@
 import express from "express";
-import axios from "axios";
 
 const app = express();
 app.use(express.json());
 
+// Simple health check – for GET /
+app.get("/", (req, res) => {
+  res.json({ status: "ok", message: "API server is running" });
+});
+
+// Main endpoint your GPT will call
 app.post("/render/capcut", async (req, res) => {
   const { template_id, script, scenes, captions, aspect_ratio } = req.body;
 
-  try {
-    // Example placeholder call — replace with real CapCut/video engine API later
-    const response = await axios.post(
-      "https://api.capcut.com/render",
-      {
-        template_id,
-        script,
-        scenes,
-        captions,
-        aspect_ratio
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.CAPCUT_API_KEY}`
-        }
-      }
-    );
+  console.log("Received render request:", {
+    template_id,
+    script,
+    scenes,
+    captions,
+    aspect_ratio
+  });
 
-    res.json({
-      video_url: response.data.video_url,
-      thumbnail_url: response.data.thumbnail_url
-    });
+  // For now, just return fake URLs so everything works end-to-end
+  const fakeId = Date.now();
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
+  res.json({
+    video_url: `https://example.com/videos/render-${fakeId}.mp4`,
+    thumbnail_url: `https://example.com/thumbnails/render-${fakeId}.jpg`
+  });
 });
 
-app.listen(3000, () => console.log("API server running on port 3000"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`API server running on port ${PORT}`));
